@@ -9,5 +9,4 @@ public class ToacinsTechNewsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ToacinsTechNewsApplication.class, args);
 	}
-
 }
