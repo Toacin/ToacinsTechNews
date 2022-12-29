@@ -18,13 +18,10 @@ public class PostController {
 
     @Autowired
     PostRepository repository;
-
     @Autowired
     VoteRepository voteRepository;
-
     @Autowired
     UserRepository userRepository;
-
     @GetMapping("/api/posts")
     public List<Post> getAllPosts() {
         List<Post> postList = repository.findAll();
@@ -38,7 +35,6 @@ public class PostController {
     public Post getPost(@PathVariable Integer id) {
         Post returnPost = repository.getById(id);
         returnPost.setVoteCount(voteRepository.countVotesByPostId(returnPost.getId()));
-
         return returnPost;
     }
 
@@ -49,25 +45,27 @@ public class PostController {
         return post;
     }
 
-    @PutMapping("api/posts/upvote")
-    public String addvote(@RequestBody Vote vote, HttpServletRequest request) {
-        String returnValue = "";
+    @PutMapping("/api/posts/{id}")
+    public Post updatePost(@PathVariable int id, @RequestBody Post post) {
+        Post tempPost = repository.getById(id);
+        tempPost.setTitle(post.getTitle());
+        return repository.save(tempPost);
+    }
 
+    @PutMapping("/api/posts/upvote")
+    public String addVote(@RequestBody Vote vote, HttpServletRequest request) {
+        String returnValue = "";
         if(request.getSession(false) != null) {
             Post returnPost = null;
-
             User sessionUser = (User) request.getSession().getAttribute("SESSION_USER");
             vote.setUserId(sessionUser.getId());
             voteRepository.save(vote);
-
             returnPost = repository.getById(vote.getPostId());
             returnPost.setVoteCount(voteRepository.countVotesByPostId(vote.getPostId()));
-
             returnValue = "";
         } else {
             returnValue = "login";
         }
-
         return returnValue;
     }
 
