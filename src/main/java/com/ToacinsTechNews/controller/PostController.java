@@ -22,6 +22,7 @@ public class PostController {
     VoteRepository voteRepository;
     @Autowired
     UserRepository userRepository;
+
     @GetMapping("/api/posts")
     public List<Post> getAllPosts() {
         List<Post> postList = repository.findAll();
@@ -33,7 +34,7 @@ public class PostController {
 
     @GetMapping("/api/posts/{id}")
     public Post getPost(@PathVariable Integer id) {
-        Post returnPost = repository.getById(id);
+        Post returnPost = repository.getReferenceById(id);
         returnPost.setVoteCount(voteRepository.countVotesByPostId(returnPost.getId()));
         return returnPost;
     }
